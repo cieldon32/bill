@@ -1,0 +1,13 @@
+src/**/*.test.ts
+src/**/files/**
+test/**
+node_modules
+storybook-static/**
+storybook-static
+stories/**
+stories
+config/*.js
+config/**/**
+mock/*.js
+scripts/**
+!.*.js

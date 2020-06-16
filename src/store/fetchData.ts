@@ -1,17 +1,6 @@
-import moment from 'moment';
-import Request from './request';
-import { BillType, CategoryType } from './dot.interface';
-
-export interface GetBillsParams {
-  month: number;
-  category?: string;
-}
-
-export function isSameMonth(time: number, month: number): boolean {
-  const date = moment(Number(time));
-  const result = date.isValid ? date.month() == month : false;
-  return result;
-}
+import Request from '@/api/request';
+import { isSameMonth } from '@/utils';
+import { BillType, CategoryType, GetBillsParams } from './common.interface';
 
 export const getCategories = async (): Promise<CategoryType[]> => {
   const res: CategoryType[] = await Request.get('/mock/categories.csv');

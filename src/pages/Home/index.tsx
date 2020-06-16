@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { Bill } from '@/conponents-biz/bill';
-import { BillType } from '@/api/dot.interface';
-import { getBills, getCategories } from '@/api/getBills';
+import { BillType } from '@/store/common.interface';
+import { getBills, getCategories } from '@/store/fetchData';
 import { MonthSelect } from '@/conponents-biz/monthSelect';
 import { CategorySelect } from '@/conponents-biz/categorySelect';
-import { useStore } from './model/useStore';
+import { Counter } from '@/conponents-biz/counter';
+import { useStore } from '@/store/useStore';
 
 const Home = () => {
   const [state, dispatch] = useStore();
-  const [month, setMonth] = useState<number>();
   const [category, setCategory] = useState('');
 
   const getData = async () => {
@@ -31,13 +31,12 @@ const Home = () => {
   }, []);
 
   const sortBillsByMonth = (currentMonth: number) => {
-    setMonth(currentMonth);
     dispatch({ type: 'sort', month: currentMonth, category });
   };
 
   const sortBillsByCategory = (currentCategory: string) => {
     setCategory(currentCategory);
-    dispatch({ type: 'sort', month, category: currentCategory });
+    dispatch({ type: 'sort', month: state.month, category: currentCategory });
   };
 
   return (
@@ -66,15 +65,8 @@ const Home = () => {
             <div>暂无数据</div>
           )}
         </div>
-        <div className="w-1/2 border-gray-300 border-4 flex overflow-hidden">
-          <div className="w-1/2 p-8 flex flex-col items-center justify-center bg-red-300">
-            <h2>收入</h2>
-            <span>123</span>
-          </div>
-          <div className="w-1/2 p-8 flex flex-col items-center justify-center bg-gray-300">
-            <h2>支出</h2>
-            <span>123</span>
-          </div>
+        <div className="w-1/2 border-gray-300 border-4 overflow-hidden">
+          <Counter dataSource={state.totalMonthAmount[month]}></Counter>
         </div>
       </div>
     </>

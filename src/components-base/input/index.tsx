@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface InputProps {
-  name: string;
-  type: 'text' | 'email';
+  name?: string;
+  type: 'text' | 'email' | 'number';
   placeholder?: string;
   title?: string;
   status?: 'warnning' | 'info' | 'success' | 'error';
@@ -11,7 +11,7 @@ interface InputProps {
   help?: string;
 }
 
-export const Input = ({
+export const Input: React.FC<InputProps> = ({
   name,
   type,
   placeholder,
@@ -20,7 +20,7 @@ export const Input = ({
   message,
   className,
   help,
-}: InputProps) => {
+}): any => {
   <div className={className}>
     {title && (
       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>

@@ -1,39 +1,16 @@
-/* eslint-disable no-case-declarations */
-import { createSubscriptionHook } from '@huameow/hook-subscription';
+// import { createSubscriptionHook } from '@huameow/hook-subscription';
+import { createSubscriptionHook } from '@/utils/creatSubscription';
 import * as R from 'ramda';
-import { BillType, CategoryType } from '@/api/dot.interface';
-import { GetBillsParams, isSameMonth } from '@/api/getBills';
-
-interface CategoriesAmount {
-  categoryId: string;
-  in: number;
-  out: number;
-}
-
-interface MonthAmount {
-  month: number;
-  in: number;
-  out: number;
-  categoriesTotalAmount: CategoriesAmount[];
-}
-
-interface TotalMonthAmount {
-  [month: number]: MonthAmount;
-}
-
-interface State {
-  bills: BillType[];
-  categories: CategoryType[];
-  filteredBills: BillType[];
-  totalMonthAmount: TotalMonthAmount;
-}
-
-interface Action {
-  type: string;
-  data?: State;
-  month?: number;
-  category?: string;
-}
+import { isSameMonth } from '@/utils';
+import {
+  BillType,
+  CategoryType,
+  State,
+  GetBillsParams,
+  CategoriesAmount,
+  TotalMonthAmount,
+  Action,
+} from './common.interface';
 
 const initialState: State = {
   bills: [],
@@ -62,15 +39,20 @@ const filterBills = (state: State, { month, category }: GetBillsParams): BillTyp
 };
 
 const getTotalAmount = <T>(list: T[], condition: Function): number => {
-  return list.map(item => condition(item)).reduce((acc: number, value: number) => acc + value, 0);
+  const filterList = list.map(item => condition(item));
+  const result = filterList.reduce((acc: number, value: number) => Number(acc) + Number(value), 0);
+  return result;
 };
 
 const getTotalCategoriesAmount = (list: BillType[]): CategoriesAmount[] => {
-  const categoryIds = R.pluck('category', list);
+  const categoryIds = R.uniq(R.pluck('category', list));
+  const categoryIdsMap = R.groupBy<BillType>(R.prop('category'), list);
   const result = categoryIds.map(category => {
+    const categoryIdsList = categoryIdsMap[category];
     return {
       categoryId: category,
-      in: getTotalAmount<BillType>(list, (item: BillType) =>
+      categoryName: categoryIdsList[0].categoryData.name,
+      in: getTotalAmount<BillType>(categoryIdsList, (item: BillType) =>
         item.type == 1 && item.category === category ? item.amount : 0,
       ),
       out: getTotalAmount<BillType>(list, (item: BillType) =>
@@ -83,21 +65,26 @@ const getTotalCategoriesAmount = (list: BillType[]): CategoriesAmount[] => {
 
 const getTotalMonthAmount = (list: BillType[], month: number): TotalMonthAmount => {
   const result: TotalMonthAmount = {};
-  result[month] = {
-    month,
-    in: getTotalAmount<BillType>(list, (item: BillType) => (item.type == 1 ? item.amount : 0)),
-    out: getTotalAmount<BillType>(list, (item: BillType) => (item.type == 0 ? item.amount : 0)),
-    categoriesTotalAmount: getTotalCategoriesAmount(list),
-  };
-  return [];
+  if (list.length) {
+    result[month] = {
+      month,
+      in: getTotalAmount<BillType>(list, (item: BillType) => (item.type == 1 ? item.amount : 0)),
+      out: getTotalAmount<BillType>(list, (item: BillType) => (item.type == 0 ? item.amount : 0)),
+      categoriesTotalAmount: getTotalCategoriesAmount(list),
+    };
+  }
+
+  return result;
 };
 
-const reducer = (state: State, action: Action) => {
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'init':
       const { bills, categories, filteredBills } = action.data;
       const billList = mergeCategoryToBill(bills, categories);
-      const totalMonthAmount = billList.length ? getTotalMonthAmount(billList, action.month) : [];
+      const totalMonthAmount = filteredBills.length
+        ? getTotalMonthAmount(filteredBills, action.month)
+        : {};
       return {
         bills: billList,
         categories,
@@ -112,10 +99,22 @@ const reducer = (state: State, action: Action) => {
         ...state,
         filteredBills: list,
         totalMonthAmount: newTotalMonthAmount,
+        month,
+      };
+    case 'add':
+      const { bill } = action;
+      const newFilteredBills = state.filteredBills;
+      if (isSameMonth(bill.time, state.month)) {
+        newFilteredBills.unshift(bill);
+      }
+      return {
+        ...state,
+        bills: [...state.bills, bill],
+        filteredBills: newFilteredBills,
       };
     default:
       return state;
   }
 };
 
-export const useStore = createSubscriptionHook(reducer, initialState);
+export const useStore = createSubscriptionHook<State, Action>(reducer, initialState);

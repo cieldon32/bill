@@ -9,6 +9,7 @@
 - react16 + typescript
 - tailwind css + postCss
   - 不用 ui 框架下最为省力的选择
+  - 样式上没有写的很精细化，只是把布局位置完成
 - eslint 规则基于 airbnb's，react-app，prettier
 - "react-router-dom" for router
 - 用 "@huameow/hook-subscription" 来创建 store-hook, 继而管理全局状态

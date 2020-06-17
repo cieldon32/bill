@@ -67,7 +67,7 @@ const Home = () => {
           <MonthSelect value={state.month} className="w-20" onChange={sortBillsByMonth} />
           <CategorySelect
             dataSource={state.categories}
-            className="w-20"
+            className="w-20 ml-2"
             onChange={sortBillsByCategory}
           />
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import * as styles from './styles';
 
 export interface SelectOptions {
   value: number | string;
@@ -36,12 +37,12 @@ export const Select = ({
   return (
     <div className={className}>
       {title && (
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
+        <label className={styles.label} htmlFor={name}>
           {title}
         </label>
       )}
       <select
-        className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        className={styles.select}
         name={name}
         placeholder={placeholder}
         defaultValue={value}

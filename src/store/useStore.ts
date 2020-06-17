@@ -9,6 +9,7 @@ import {
   CategoriesAmount,
   TotalMonthAmount,
   Action,
+  ActionType,
 } from './common.interface';
 
 const initialState: State = {
@@ -52,10 +53,10 @@ const getTotalCategoriesAmount = (list: BillType[]): CategoriesAmount[] => {
       categoryId: category,
       categoryName: categoryIdsList[0].categoryData.name,
       in: getTotalAmount<BillType>(categoryIdsList, (item: BillType) =>
-        item.type == 1 && item.category === category ? item.amount : 0,
+        Number(item.type) === 1 && item.category === category ? item.amount : 0,
       ),
       out: getTotalAmount<BillType>(list, (item: BillType) =>
-        item.type == 0 && item.category === category ? item.amount : 0,
+        Number(item.type) === 0 && item.category === category ? item.amount : 0,
       ),
     };
   });
@@ -78,34 +79,36 @@ const getTotalMonthAmount = (list: BillType[], month: number): TotalMonthAmount 
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'init': {
-      const { bills, categories, filteredBills } = action.data;
+    case ActionType.INIT: {
+      const { bills, categories, filteredBills, month } = action.payload.data;
       const billList = mergeCategoryToBill(bills, categories);
       const totalMonthAmount = filteredBills.length
-        ? getTotalMonthAmount(filteredBills, action.month)
+        ? getTotalMonthAmount(filteredBills, month)
         : {};
       return {
         bills: billList,
         categories,
         filteredBills,
         totalMonthAmount,
-      };
-    }
-
-    case 'sort': {
-      const { month, category } = action;
-      const list = filterBills(state, { month, category });
-      const newTotalMonthAmount = list.length ? getTotalMonthAmount(list, month) : {};
-      return {
-        ...state,
-        filteredBills: list,
-        totalMonthAmount: newTotalMonthAmount,
         month,
       };
     }
 
-    case 'add': {
-      const { bill } = action;
+    case ActionType.FILTER: {
+      const { data, category } = action.payload;
+      const { month } = data;
+      const list = filterBills(state, { month, category });
+      const totalMonthAmount = list.length ? getTotalMonthAmount(list, month) : {};
+      return {
+        ...state,
+        filteredBills: list,
+        totalMonthAmount,
+        month,
+      };
+    }
+
+    case ActionType.ADD: {
+      const { bill } = action.payload;
       const newFilteredBills = state.filteredBills;
       let totalMonthAmount;
       if (isSameMonth(bill.time, state.month)) {

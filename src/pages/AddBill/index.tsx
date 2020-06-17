@@ -4,9 +4,11 @@ import { toDate } from '@huameow/utils';
 import { Input } from '@/components-base/input';
 import { CategorySelect } from '@/conponents-biz/categorySelect';
 import { useStore } from '@/store/useStore';
+import { ActionType } from '@/store/common.interface';
 import { getCategories } from '@/store/fetchData';
 import { Button } from '@/components-base/button';
 import { testPrice, testTime } from './reg';
+import * as styles from './styles';
 
 const AddBill = () => {
   const history = useHistory();
@@ -83,8 +85,10 @@ const AddBill = () => {
         category,
       };
       dispatch({
-        type: 'add',
-        bill: data,
+        type: ActionType.ADD,
+        payload: {
+          bill: data,
+        },
       });
       // history.push('/')
       history.goBack();
@@ -96,10 +100,10 @@ const AddBill = () => {
   }, []);
 
   return (
-    <div className="flex-1 bg-gray-500 justify-center items-center flex">
-      <form className="max-w-m bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div className={styles.wrap}>
+      <form className={styles.form}>
         <Input
-          className="mb-6"
+          className={styles.formItem}
           type="number"
           placeholder="金额"
           name="amount"
@@ -107,7 +111,7 @@ const AddBill = () => {
           message={amountMessage}
         />
         <Input
-          className="mb-6"
+          className={styles.formItem}
           type="text"
           placeholder="xxxx-xx-xx"
           name="time"
@@ -115,17 +119,14 @@ const AddBill = () => {
           message={timeMessage}
         />
         <CategorySelect
-          className="mb-6"
+          className={styles.formItem}
           dataSource={categories}
           name="category"
           onChange={changeCategory}
           message={categoryMessage}
         />
-        <div className="flex items-center justify-between">
-          <Button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            onClick={onSubmit}
-          >
+        <div className={styles.action}>
+          <Button className={styles.btn} onClick={onSubmit}>
             添加
           </Button>
         </div>

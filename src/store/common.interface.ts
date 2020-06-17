@@ -1,3 +1,9 @@
+export enum ActionType {
+  INIT = 'init',
+  FILTER = 'filter',
+  ADD = 'add',
+}
+
 export interface GetBillsParams {
   month: number;
   category?: string;
@@ -45,10 +51,11 @@ export interface State {
 
 export interface Action {
   type: string;
-  data?: State;
-  month?: number;
-  category?: string;
-  bill?: BillType;
+  payload: {
+    data?: State;
+    category?: string;
+    bill?: BillType;
+  };
 }
 
 export const initialState: State = {

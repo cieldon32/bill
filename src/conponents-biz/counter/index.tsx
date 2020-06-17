@@ -1,6 +1,7 @@
 import React from 'react';
 import { priceFormat } from '@huameow/utils';
 import { CategoriesAmount, MonthAmount } from '@/store/common.interface';
+import * as styles from './styles';
 
 interface CounterProps {
   dataSource: MonthAmount;
@@ -8,29 +9,26 @@ interface CounterProps {
 
 export const Counter = ({ dataSource }: CounterProps) => (
   <>
-    <div className="flex">
-      <div className="w-1/2 p-8 flex flex-col items-center justify-center bg-red-300">
+    <div className={styles.total}>
+      <div className={styles.totalItem}>
         <h2>收入</h2>
         <span>{priceFormat(dataSource?.in)}</span>
       </div>
-      <div className="w-1/2 p-8 flex flex-col items-center justify-center bg-gray-300">
+      <div className={styles.totalItem}>
         <h2>支出</h2>
         <span>{priceFormat(dataSource?.out)}</span>
       </div>
     </div>
     {dataSource?.categoriesTotalAmount.length &&
       dataSource.categoriesTotalAmount.map((item: CategoriesAmount) => (
-        <div className="flex mt-4 p-6" key={item.categoryId}>
-          <div className="w-1/6">{item.categoryName}</div>
+        <div className={styles.category} key={item.categoryId}>
+          <div className={styles.categoryLeft}>{item.categoryName}</div>
           <div>
-            <a className="bg-red-300 h-6 inline-block pr-1" style={{ width: `${item.in / 100}%` }}>
-              <span className="opacity-0 hover:opacity-100">{priceFormat(item.in)}</span>
+            <a className={styles.amountIn} style={{ width: `${item.in / 100}%` }}>
+              <span className={styles.amountTip}>{priceFormat(item.in)}</span>
             </a>
-            <a
-              className="bg-gray-300 h-6 inline-block  pr-1"
-              style={{ width: `${item.out / 100}%` }}
-            >
-              <span className="opacity-0 hover:opacity-100">{priceFormat(item.out)}</span>
+            <a className={styles.amountOut} style={{ width: `${item.out / 100}%` }}>
+              <span className={styles.amountTip}>{priceFormat(item.out)}</span>
             </a>
           </div>
         </div>

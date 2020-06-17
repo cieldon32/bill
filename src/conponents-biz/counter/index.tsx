@@ -23,12 +23,12 @@ export const Counter = ({ dataSource }: CounterProps) => (
         <div className="flex mt-4 p-6" key={item.categoryId}>
           <div className="w-1/6">{item.categoryName}</div>
           <div>
-            <a className="bg-red-300 h-6 inline-block pr-1" style={{ width: `${item.in / 10}%` }}>
+            <a className="bg-red-300 h-6 inline-block pr-1" style={{ width: `${item.in / 100}%` }}>
               <span className="opacity-0 hover:opacity-100">{priceFormat(item.in)}</span>
             </a>
             <a
               className="bg-gray-300 h-6 inline-block  pr-1"
-              style={{ width: `${item.out / 10}%` }}
+              style={{ width: `${item.out / 100}%` }}
             >
               <span className="opacity-0 hover:opacity-100">{priceFormat(item.out)}</span>
             </a>

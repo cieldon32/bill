@@ -1,12 +1,14 @@
 import React from 'react';
 import { Select, SelectOptions } from '@/components-base/select';
-import { CategoryType } from '@/api/dot.interface';
+import { CategoryType } from '@/store/common.interface';
 
 interface CategorySelectProps {
   value?: string;
   className?: string;
   dataSource: CategoryType[];
   onChange?: (v: string) => void;
+  name?: string;
+  message?: string;
 }
 
 export const CategorySelect = ({
@@ -14,6 +16,8 @@ export const CategorySelect = ({
   className,
   dataSource,
   onChange,
+  name,
+  message,
 }: CategorySelectProps) => {
   const matchSelectOptions = (list: CategoryType[]): SelectOptions[] => {
     if (!list.length) {
@@ -32,11 +36,13 @@ export const CategorySelect = ({
   const categories = matchSelectOptions(dataSource);
   return (
     <Select
+      name={name}
       dataSource={categories}
       value={value}
       className={className}
       placeholder="分类"
       onChange={onChange}
+      message={message}
     />
   );
 };

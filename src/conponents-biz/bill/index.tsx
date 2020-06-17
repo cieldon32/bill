@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatDate, priceFormat } from '@huameow/utils';
-import { BillType } from '@/api/dot.interface';
+import { BillType } from '@/store/common.interface';
 
 interface BillProps {
   dataSource: BillType;

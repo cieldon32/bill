@@ -9,9 +9,10 @@ interface InputProps {
   message?: string;
   className?: string;
   help?: string;
+  onChange?: (v: any) => void;
 }
 
-export const Input: React.FC<InputProps> = ({
+export const Input = ({
   name,
   type,
   placeholder,
@@ -20,22 +21,29 @@ export const Input: React.FC<InputProps> = ({
   message,
   className,
   help,
-}): any => {
-  <div className={className}>
-    {title && (
-      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
-        {title}
-      </label>
-    )}
-    <input
-      className={`bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal ${
-        status === 'error' ? 'border-red-500' : ''
-      }`}
-      type={type}
-      placeholder={placeholder}
-      name={name}
-    />
-    {status === 'error' && message && <p className="text-red-500 text-xs italic">{message}</p>}
-    {help && <p className="text-gray-600 text-xs italic">{help}</p>}
-  </div>;
+  onChange,
+}: InputProps) => {
+  const handleChange = (e: any) => {
+    onChange(e.target.value);
+  };
+  return (
+    <div className={className}>
+      {title && (
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
+          {title}
+        </label>
+      )}
+      <input
+        className={`bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal ${
+          status === 'error' ? 'border-red-500' : ''
+        }`}
+        type={type}
+        placeholder={placeholder}
+        name={name}
+        onChange={handleChange}
+      />
+      {message && <p className="text-red-500 text-xs italic">{message}</p>}
+      {help && <p className="text-gray-600 text-xs italic">{help}</p>}
+    </div>
+  );
 };

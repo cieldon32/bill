@@ -1,5 +1,4 @@
-// import { createSubscriptionHook } from '@huameow/hook-subscription';
-import { createSubscriptionHook } from '@/utils/creatSubscription';
+import { createSubscriptionHook } from '@huameow/hook-subscription';
 import * as R from 'ramda';
 import { isSameMonth } from '@/utils';
 import {
@@ -79,7 +78,7 @@ const getTotalMonthAmount = (list: BillType[], month: number): TotalMonthAmount 
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'init':
+    case 'init': {
       const { bills, categories, filteredBills } = action.data;
       const billList = mergeCategoryToBill(bills, categories);
       const totalMonthAmount = filteredBills.length
@@ -91,7 +90,9 @@ const reducer = (state: State, action: Action): State => {
         filteredBills,
         totalMonthAmount,
       };
-    case 'sort':
+    }
+
+    case 'sort': {
       const { month, category } = action;
       const list = filterBills(state, { month, category });
       const newTotalMonthAmount = list.length ? getTotalMonthAmount(list, month) : {};
@@ -101,20 +102,33 @@ const reducer = (state: State, action: Action): State => {
         totalMonthAmount: newTotalMonthAmount,
         month,
       };
-    case 'add':
+    }
+
+    case 'add': {
       const { bill } = action;
       const newFilteredBills = state.filteredBills;
+      let totalMonthAmount;
       if (isSameMonth(bill.time, state.month)) {
-        newFilteredBills.unshift(bill);
+        const categoryData = R.find<CategoryType>(R.propEq('id', bill.category))(state.categories);
+        newFilteredBills.unshift({
+          ...bill,
+          categoryData,
+          type: categoryData.type,
+        });
+        totalMonthAmount = getTotalMonthAmount(newFilteredBills, state.month);
       }
       return {
         ...state,
         bills: [...state.bills, bill],
         filteredBills: newFilteredBills,
+        totalMonthAmount,
       };
-    default:
+    }
+
+    default: {
       return state;
+    }
   }
 };
 
-export const useStore = createSubscriptionHook<State, Action>(reducer, initialState);
+export const useStore = createSubscriptionHook(reducer, initialState);

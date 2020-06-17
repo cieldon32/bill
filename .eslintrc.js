@@ -52,7 +52,6 @@ module.exports = {
     'no-else-return': 0,
     '@typescript-eslint/no-unused-expressions': 0,
     'react/self-closing-comp': 0,
-    'no-case-declarations': 0,
   },
   globals: {
     gtag: true,

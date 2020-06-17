@@ -39,7 +39,7 @@ export interface State {
   bills: BillType[];
   categories: CategoryType[];
   filteredBills: BillType[];
-  totalMonthAmount: TotalMonthAmount;
+  totalMonthAmount?: TotalMonthAmount;
   month?: number;
 }
 

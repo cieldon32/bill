@@ -60,6 +60,7 @@ instance.interceptors.response.use(
     }
   },
   (error: any) => {
+    window.location.href = '/#/404';
     return Promise.reject(error);
   },
 );

@@ -78,7 +78,7 @@
     ]
   },
   "dependencies": {
-    "@huameow/hook-subscription": "^0.0.5",
+    "@huameow/hook-subscription": "^0.0.6",
     "@huameow/utils": "^0.0.3",
     "axios": "^0.19.2",
     "d3-dsv": "^1.2.0",

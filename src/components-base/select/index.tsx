@@ -14,8 +14,8 @@ interface SelectProps {
   className?: string;
   help?: string;
   dataSource: SelectOptions[];
-  value?: number | string;
-  onChange?: (v: any) => void;
+  value?: string | number;
+  onChange?: (v: string) => void;
 }
 
 export const Select = ({
@@ -28,12 +28,13 @@ export const Select = ({
   help,
   dataSource,
   onChange,
+  className,
 }: SelectProps) => {
   const handleChange = (e: any) => {
     onChange(e.target.value);
   };
   return (
-    <div>
+    <div className={className}>
       {title && (
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
           {title}
@@ -52,7 +53,7 @@ export const Select = ({
           </option>
         ))}
       </select>
-      {status === 'error' && message && <p className="text-red-500 text-xs italic">{message}</p>}
+      {message && <p className="text-red-500 text-xs italic">{message}</p>}
       {help && <p className="text-gray-600 text-xs italic">{help}</p>}
     </div>
   );

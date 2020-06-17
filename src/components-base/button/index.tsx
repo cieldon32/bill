@@ -43,7 +43,7 @@ export const Button = ({
       );
     default:
       return (
-        <button className={`${btnClassName} ${className}`} onClick={onClick}>
+        <button className={`${className}`} onClick={onClick} type="button">
           {children}
         </button>
       );
